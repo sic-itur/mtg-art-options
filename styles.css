@@ -42,7 +42,7 @@ p, .meta {
   top: 0;
   z-index: 20;
   background: var(--bg);
-  padding: 1.25rem 0 0.75rem 0;
+  padding: 1.25rem 0 0.25rem 0;
   margin-bottom: 1.5rem;
   border-bottom: 1px solid var(--border);
 }
@@ -56,7 +56,7 @@ p, .meta {
 }
 
 .topbar.has-ui {
-  margin: 1.125rem 0 0.75rem;
+  margin: 1.125rem 0 1.25rem;
 }
 
 .topbar input {
@@ -69,8 +69,6 @@ p, .meta {
   outline: none;
 }
 .topbar input::placeholder { color: rgba(232,238,246,0.45); }
-
-#searchBox[hidden] { display: none !important; }
 
 button, .btn {
   border: 1px solid var(--border);
