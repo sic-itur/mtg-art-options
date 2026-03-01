@@ -112,21 +112,25 @@ function parseDecklistNames(deckText) {
   for (const rawLine of deckText.split(/\r?\n/)) {
     const line = rawLine.trim();
 
+    if (!line) continue;
+
+    // stops parsing at dashed separators
     if (/^-{3,}$/.test(line)) break;
+
+    // skips SIDEBOARD header lines but continues parsing
+    if (line.toUpperCase().startsWith("SIDEBOARD")) continue;
 
     // ignores weird headers
     if (/^[A-Za-z ].*\(\d+\)$/.test(line)) continue;
     if (/^(commander|sideboard|maybeboard)$/i.test(line)) continue;
 
-    if (line.toUpperCase().startsWith("SIDEBOARD")) continue;
-
     const name = cleanCardName(line);
     if (!name) continue;
 
     if (BASIC_LANDS.has(name)) continue;
+
     if (!seen.has(name)) {
       if (names.length >= MAX_UNIQUE_CARDS) break;
-
       seen.add(name);
       names.push(name);
     }
@@ -311,8 +315,8 @@ function renderRows(groupedItems, options) {
       const stores = document.createElement("div");
       stores.className = "row-store-links";
       stores.innerHTML = `
-        <button class="store" href="${escapeAttr(f2f)}" target="_blank" rel="noopener">Face to Face</a>
-        <button class="store" href="${escapeAttr(g401)}" target="_blank" rel="noopener">401 Games</a>
+        <a class="btn store" href="${escapeAttr(f2f)}" target="_blank" rel="noopener">Face to Face</a>
+        <a class="btn store" href="${escapeAttr(g401)}" target="_blank" rel="noopener">401 Games</a>
       `;
       left.appendChild(stores);
     }
@@ -378,6 +382,7 @@ function setStatus(text, clearAfterMs = 0, type = "info") {
   if (type === "error") el.classList.add("is-error");
 
   el.textContent = text;
+  updateTopbarUIState();
 
   if (clearAfterMs > 0) {
     setStatus._fadeT = window.setTimeout(() => {
@@ -387,6 +392,7 @@ function setStatus(text, clearAfterMs = 0, type = "info") {
     setStatus._t = window.setTimeout(() => {
       if (el.textContent === text) el.textContent = "";
       el.classList.remove("is-fading", "is-error");
+      updateTopbarUIState();
     }, clearAfterMs);
   }
 }
@@ -483,6 +489,25 @@ function showTopbarClearButton(show) {
   const btn = document.getElementById("topClearBtn");
   if (!btn) return;
   btn.hidden = !show;
+  updateTopbarUIState();
+}
+
+function setSearchVisible(visible) {
+  const el = document.getElementById("searchBox");
+  if (!el) return;
+  el.hidden = !visible;
+  updateTopbarUIState();
+}
+
+function updateTopbarUIState() {
+  const topbar = document.querySelector(".topbar");
+  if (!topbar) return;
+
+  const searchVisible = !document.getElementById("searchBox")?.hidden;
+  const clearVisible = !document.getElementById("topClearBtn")?.hidden;
+  const statusHasText = Boolean(document.getElementById("statusLine")?.textContent?.trim());
+
+  topbar.classList.toggle("has-ui", searchVisible || clearVisible || statusHasText);
 }
 
 function main() {
@@ -501,6 +526,8 @@ function main() {
 
       setHasGallery(false);
       showTopbarClearButton(false);
+      setSearchVisible(false);
+      document.getElementById("searchBox").value = "";
       setStatus("");
 
       document.getElementById("metaLine").textContent =
@@ -523,6 +550,8 @@ function main() {
 
   setHasGallery(false);
   showTopbarClearButton(false);
+  setSearchVisible(false);
+  document.getElementById("searchBox").value = "";
 
   clearBtn.addEventListener("click", () => {
     const rowsEl = document.getElementById("rows");
@@ -534,6 +563,8 @@ function main() {
 
     setHasGallery(false);
     showTopbarClearButton(false);
+    setSearchVisible(false);
+    document.getElementById("searchBox").value = "";
   });
 
   generateBtn.addEventListener("click", async () => {
@@ -561,6 +592,7 @@ function main() {
       // hides import ui + shows "start over" button
       setHasGallery(true);
       showTopbarClearButton(true);
+      setSearchVisible(true);
 
     } catch (e) {
       console.error(e);
@@ -569,6 +601,8 @@ function main() {
       // keeps import ui visible if it failed
       setHasGallery(false);
       showTopbarClearButton(false);
+      setSearchVisible(false);
+      document.getElementById("searchBox").value = "";
     } finally {
       generateBtn.disabled = false;
     }

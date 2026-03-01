@@ -52,6 +52,10 @@ p, .meta {
   gap: 0.75rem;
   align-items: center;
   flex-wrap: wrap;
+  margin: 0;
+}
+
+.topbar.has-ui {
   margin: 1.125rem 0 0.75rem;
 }
 
@@ -66,7 +70,9 @@ p, .meta {
 }
 .topbar input::placeholder { color: rgba(232,238,246,0.45); }
 
-button {
+#searchBox[hidden] { display: none !important; }
+
+button, .btn {
   border: 1px solid var(--border);
   background: var(--button);
   color: var(--text);
