@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Distinct Card Art Gallery</title>
+  <link rel="stylesheet" href="styles.css" />
+
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <div class="header">
+    <h1>Distinct Card Art Gallery</h1>
+    <div class="meta" id="metaLine">Paste a decklist below to generate a gallery of all unique card art. Up to 100 cards can be parsed at a time.</div>
+
+    <div class="topbar">
+      <input id="searchBox" type="text" placeholder="Filter cards by name" />
+      <button id="topClearBtn" type="button" hidden>Start over</button>
+      <span class="status" id="statusLine"></span>
+    </div>
+  </div>
+
+  <div id="rows" class="rows">
+    <div id="emptyState" class="empty-state">
+      <h2>Import cards</h2>
+        <p>
+          Paste a <b>plain-text</b> decklist export (Moxfield, Archidekt, etc.), or one card name per line.<br>
+          Basic lands and anything over the 100 card parsing limit will be skipped.
+        </p>
+
+      <textarea id="deckInput" placeholder="Paste decklist here..."></textarea>
+
+      <div class="empty-actions">
+        <button type="button" id="generateBtn">Generate</button>
+        <button type="button" id="clearBtn" class="ghost">Clear</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
